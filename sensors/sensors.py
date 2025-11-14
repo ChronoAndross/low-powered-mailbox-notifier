@@ -20,14 +20,12 @@ class Sensors():
 		self.event_callbacks_setup = False
 
 	def setup_event_callbacks(self, callback: callable, callback_args: list):
-		print(callback_args)
-		print(type(callback_args))
 		if self.event_callbacks_setup:
 			print("callbacks already set up, skipping")
 		else:
-			gpio.add_event_detect(self.gpio_microphone, gpio.RISING, callback=lambda callback_args: callback(*callback_args), bouncetime=1000)
-			gpio.add_event_detect(self.gpio_pir_1, gpio.RISING, callback=lambda callback_args: callback(*callback_args), bouncetime=1000)
-			gpio.add_event_detect(self.gpio_pir_2, gpio.RISING, callback=lambda callback_args: callback(*callback_args), bouncetime=1000)
+			gpio.add_event_detect(self.gpio_microphone, gpio.RISING, callback=lambda channel: callback(*callback_args), bouncetime=1000)
+			gpio.add_event_detect(self.gpio_pir_1, gpio.RISING, callback=lambda channel: callback(*callback_args), bouncetime=1000)
+			gpio.add_event_detect(self.gpio_pir_2, gpio.RISING, callback=lambda channel: callback(*callback_args), bouncetime=1000)
 	 
 	def detect(self) -> bool:
 		_, temperature = Adafruit_DHT.read_retry(self.dht_11_sensor, self.dht_11_temp)
