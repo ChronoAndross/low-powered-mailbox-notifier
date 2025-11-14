@@ -4,12 +4,13 @@ import time
 import sys
 import signal
 
-def _signal_handler()
+def _signal_handler():
     sys.exit(0)
 
 def _low_powered_implementation(sensors_api: Sensors, twilio_api: Twilio, phone_number_from: str, phone_number_to: str):
-    sensors_api.setup_event_callbacks(twilio_api.send_text_message(phone_number_from, phone_number_to, "this is a sample message!!!"))
+    sensors_api.setup_event_callbacks(twilio_api.send_text_message, [phone_number_from, phone_number_to, "this is a sample message!!!"])
     signal.signal(signal.SIGINT, _signal_handler)
+    print("pausing on main thread for low power")
     signal.pause()
     
 
