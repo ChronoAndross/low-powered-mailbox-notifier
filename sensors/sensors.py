@@ -1,7 +1,9 @@
 import RPi.GPIO as gpio
 import time
+import Adafruit_DHT
+
 class Sensors():
-	def __init__(self, gpio_pir_1: int, gpio_pir_2: int, gpio_microphone: int):
+	def __init__(self, gpio_pir_1: int, gpio_pir_2: int, gpio_microphone: int, dht_11_temp: int):
 		gpio.setmode(gpio.BOARD)
 		
 		gpio.setup(gpio_pir_1, gpio.IN)
@@ -13,6 +15,8 @@ class Sensors():
 		self.gpio_pir_1 = gpio_pir_1
 		self.gpio_pir_2 = gpio_pir_2
 		self.gpio_microphone = gpio_microphone
+		self.dht_11_temp = dht_11_temp
+		self.dht_11_sensor = Adafruit_DHT.DHT11
 		self.event_callbacks_setup = False
 
 	def setup_event_callbacks(self, callback: callable):
@@ -22,17 +26,20 @@ class Sensors():
 			gpio.add_event_detect(self.gpio_microphone, gpio.RISING, callback, bouncetime=1000)
 			gpio.add_event_detect(self.gpio_pir_1, gpio.RISING, callback, bouncetime=1000)
 			gpio.add_event_detect(self.gpio_pir_2, gpio.RISING, callback, bouncetime=1000)
-	
+	 
 	def detect(self) -> bool:
+		_, temperature = Adafruit_DHT.read_retry(self.dht_11_sensor, self.dht_11_temp)
+		print(f"current temperature: {temperature}")
+		if gpio.input(self.gpio_microphone):
+			print("microphone detection!!")
+			return True
 		if gpio.input(self.gpio_pir_1):
 			print("pir 1 detection!")
 			return True
 		if gpio.input(self.gpio_pir_2):
 			print("pir 2 detection!")
 			return True
-		if gpio.input(self.gpio_microphone):
-			print("microphone detection!!")
-			return True
+		
 		return False
 		
 	

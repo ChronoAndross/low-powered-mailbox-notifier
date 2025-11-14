@@ -20,7 +20,16 @@ def _high_powered_implementation(sensors_api: Sensors, twilio_api: Twilio, phone
 
 def main(low_power_execution: bool):
     # instantiate sensors
-    sensors_api = Sensors(31, 33, 37)
+    
+    # these are the numbered pins on the RPi
+    board_pin_pir_1 = 31
+    board_pin_pir_2 = 33
+    board_pin_microphone = 37
+    
+    # this is the GPIO pin, not the numbered pin on RPi
+    gpio_pin_dht11 = 17
+    
+    sensors_api = Sensors(board_pin_pir_1, board_pin_pir_2, board_pin_microphone, gpio_pin_dht11)
 
     # keys.txt should be a text file that is created locally and contains the twilio account sid, access key, a from number, and a to number.
     keys = open("keys.txt").readline().split(",")
@@ -37,6 +46,6 @@ def main(low_power_execution: bool):
 
 if __name__ == "__main__":    
     low_power_execution = False
-    if len(sys.argv) > 1 and (sys.argv[0] == "low_power" or sys.argv[0] == "lp"):
+    if len(sys.argv) > 1 and (sys.argv[1] == "low_power" or sys.argv[1] == "lp"):
         low_power_execution = True
     main(low_power_execution)
