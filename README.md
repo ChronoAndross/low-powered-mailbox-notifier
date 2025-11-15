@@ -38,3 +38,8 @@ This should transition the system into using low power. This includes
 - having the interrupts be event driven
 - clock gating to shut down UART/WiFi within transition windows
 - duty cycling which transmits the messages at defined intervals
+
+## I2C Wattmeter graph
+This code also includes code which shows a graph for precise measurements via the ina219 I2C wattmeter. If connected appropriately (use [this guide](https://www.dfrobot.com/product-1827.html?srsltid=AfmBOoqU1gFV82EL-XfqefH7owhVnppxaNpzOtrHkUG2Vl4-3J5haMLu) for reference), you'll see a graph that looks something like the following:
+
+![wattmeter_sample](assets/wattmeter_sample.png)
