@@ -38,14 +38,13 @@ def main(low_power_execution: bool):
     # instantiate sensors
     
     # these are the numbered pins on the RPi
-    board_pin_pir_1 = 31
-    board_pin_pir_2 = 33
+    board_pin_pir = 31
     board_pin_microphone = 37
     
     # this is the GPIO pin, not the numbered pin on RPi
     gpio_pin_dht11 = 17
     
-    sensors_api = Sensors(board_pin_pir_1, board_pin_pir_2, board_pin_microphone, gpio_pin_dht11)``
+    sensors_api = Sensors(board_pin_pir, board_pin_microphone, gpio_pin_dht11)
 
     # keys.txt should be a text file that is created locally and contains the twilio account sid, access key, a from number, and a to number.
     keys = open("keys.txt").readline().split(",")
