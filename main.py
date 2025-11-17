@@ -1,5 +1,6 @@
 from twilio.twilio import Twilio
 from sensors.sensors import Sensors
+import trans_controller as tc
 import time
 import sys
 import signal
@@ -8,7 +9,15 @@ def _signal_handler():
     sys.exit(0)
 
 def _low_powered_implementation(sensors_api: Sensors, twilio_api: Twilio, phone_number_from: str, phone_number_to: str):
-    sensors_api.setup_event_callbacks(twilio_api.send_text_message, [phone_number_from, phone_number_to, "this is a sample message!!!"])
+    tc.block_rf() # Start with RF off to save power
+
+    def sensor_callback():
+        tc.unblock_rf() # Turn on RF when sensor triggers
+        time.sleep(2) # Give wifi time to connect
+        twilio_api.send_text_message(phone_number_from, phone_number_to, "Mail box opened!")
+        tc.block_rf()
+
+    sensors_api.setup_event_callbacks(sensor_callback, [])
     signal.signal(signal.SIGINT, _signal_handler)
     print("pausing on main thread for low power")
     signal.pause()
@@ -36,7 +45,7 @@ def main(low_power_execution: bool):
     # this is the GPIO pin, not the numbered pin on RPi
     gpio_pin_dht11 = 17
     
-    sensors_api = Sensors(board_pin_pir_1, board_pin_pir_2, board_pin_microphone, gpio_pin_dht11)
+    sensors_api = Sensors(board_pin_pir_1, board_pin_pir_2, board_pin_microphone, gpio_pin_dht11)``
 
     # keys.txt should be a text file that is created locally and contains the twilio account sid, access key, a from number, and a to number.
     keys = open("keys.txt").readline().split(",")
